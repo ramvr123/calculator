@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scientific Calculator — Free Online Calculator with Square Root, Power, Trig</title>
+<meta name="description" content="Free online scientific calculator. Square root, x², powers, sin/cos/tan, log, ln, and more. Fast, no sign-up, works on mobile.">
+<link rel="canonical" href="https://YOUR-DOMAIN.vercel.app/calculator" />
+<meta property="og:title" content="Scientific Calculator — Free Online Calculator">
+<meta property="og:description" content="Square root, powers, trig, log, and more — free online scientific calculator, no sign-up.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page-bg: #101214;
+    --body-grad-a: #2c2f31;
+    --body-grad-b: #1c1e20;
+    --display-bg: #0a0e0c;
+    --amber: #ffb020;
+    --amber-dim: rgba(255,176,32,0.38);
+    --amber-glow: rgba(255,176,32,0.18);
+    --key-num-bg: #3c3f41;
+    --key-num-bg-hi: #46494b;
+    --key-num-text: #ecE7dd;
+    --key-fn-bg: #24272a;
+    --key-fn-bg-hi: #2d3134;
+    --key-fn-text: #9fb3ac;
+    --key-op-bg: var(--amber);
+    --key-op-bg-hi: #ffc250;
+    --key-op-text: #1a1200;
+    --key-util-bg: #57504a;
+    --key-util-text: #f2ece2;
+    --radius: 10px;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 50% -10%, #23262a 0%, var(--page-bg) 55%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 32px 16px;
+    font-family: var(--font-sans);
+  }
+
+  .eyebrow{
+    position:fixed;
+    top:22px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#5c6266;
+    font-family: var(--font-mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+
+  .instrument{
+    width: 360px;
+    max-width: 100%;
+    border-radius: 22px;
+    padding: 20px 18px 22px;
+    background: linear-gradient(160deg, var(--body-grad-a), var(--body-grad-b));
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.65),
+      0 2px 0 rgba(255,255,255,0.04) inset,
+      0 -2px 0 rgba(0,0,0,0.5) inset;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .badge{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding: 2px 4px 12px;
+    color:#787f82;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge span:last-child{ color: var(--amber-dim); }
+
+  .display{
+    background: var(--display-bg);
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6) inset, 0 0 24px var(--amber-glow) inset;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .tape{
+    height: 18px;
+    overflow: hidden;
+    color: var(--amber-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    white-space: nowrap;
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .readout{
+    display:flex;
+    justify-content:flex-end;
+    align-items:baseline;
+    gap: 8px;
+  }
+
+  .mode-tag{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--amber-dim);
+    letter-spacing: 0.08em;
+  }
+
+  #display{
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 36px;
+    color: var(--amber);
+    text-shadow: 0 0 14px var(--amber-glow);
+    text-align: right;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+  #display::-webkit-scrollbar{ display:none; }
+
+  .keys{ display:flex; flex-direction:column; gap:8px; }
+  .row{ display:grid; gap:8px; }
+  .row.sci{ grid-template-columns: repeat(5, 1fr); }
+  .row.main{ grid-template-columns: repeat(4, 1fr); }
+
+  button{
+    font-family: var(--font-sans);
+    border: none;
+    cursor: pointer;
+    color: var(--key-num-text);
+    background: var(--key-num-bg);
+    border-radius: var(--radius);
+    padding: 0;
+    height: 52px;
+    font-size: 17px;
+    font-weight: 500;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 2px 3px rgba(0,0,0,0.35);
+    transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
+  }
+  button:active, button.pressed{
+    transform: translateY(2px);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.4) inset;
+  }
+  button:hover{ background: var(--key-num-bg-hi); }
+
+  .row.sci button{
+    background: var(--key-fn-bg);
+    color: var(--key-fn-text);
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    height: 40px;
+    letter-spacing: 0.01em;
+  }
+  .row.sci button:hover{ background: var(--key-fn-bg-hi); }
+
+  .op{
+    background: var(--key-op-bg) !important;
+    color: var(--key-op-text) !important;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .op:hover{ background: var(--key-op-bg-hi) !important; }
+
+  .util{
+    background: var(--key-util-bg) !important;
+    color: var(--key-util-text) !important;
+  }
+
+  .zero{ grid-column: span 2; }
+
+  .equals{
+    background: var(--key-op-bg) !important;
+    color: var(--key-op-text) !important;
+  }
+
+  footer{
+    text-align:center;
+    color:#4b5054;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    margin-top: 18px;
+    letter-spacing: 0.06em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    button{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="eyebrow">INSTRUMENT SERIES · UTILITY 001</div>
+
+<div>
+  <div class="instrument">
+    <div class="badge">
+      <span>Model SC-1</span>
+      <span id="degMode">DEG</span>
+    </div>
+
+    <div class="display">
+      <div class="tape" id="tape">&nbsp;</div>
+      <div class="readout">
+        <div id="display">0</div>
+      </div>
+    </div>
+
+    <div class="keys">
+      <div class="row sci">
+        <button data-fn="sin">sin</button>
+        <button data-fn="cos">cos</button>
+        <button data-fn="tan">tan</button>
+        <button data-fn="sqrt">√x</button>
+        <button data-fn="sqr">x²</button>
+      </div>
+      <div class="row sci">
+        <button data-fn="log">log</button>
+        <button data-fn="ln">ln</button>
+        <button data-op="^">xʸ</button>
+        <button data-fn="inv">1/x</button>
+        <button data-fn="pi">π</button>
+      </div>
+
+      <div class="row main">
+        <button class="util" data-action="clear">C</button>
+        <button class="util" data-action="backspace">⌫</button>
+        <button class="util" data-fn="sign">±</button>
+        <button class="op" data-op="/">÷</button>
+      </div>
+      <div class="row main">
+        <button data-num="7">7</button>
+        <button data-num="8">8</button>
+        <button data-num="9">9</button>
+        <button class="op" data-op="*">×</button>
+      </div>
+      <div class="row main">
+        <button data-num="4">4</button>
+        <button data-num="5">5</button>
+        <button data-num="6">6</button>
+        <button class="op" data-op="-">−</button>
+      </div>
+      <div class="row main">
+        <button data-num="1">1</button>
+        <button data-num="2">2</button>
+        <button data-num="3">3</button>
+        <button class="op" data-op="+">+</button>
+      </div>
+      <div class="row main">
+        <button class="zero" data-num="0">0</button>
+        <button data-action="decimal">.</button>
+        <button class="equals" data-action="equals">=</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>PRECISION UTILITY — CALC UNIT</footer>
+</div>
+
+<script>
+(function(){
+  const displayEl = document.getElementById('display');
+  const tapeEl = document.getElementById('tape');
+
+  let current = '0';
+  let previous = null;
+  let operator = null;
+  let waitingForOperand = false;
+  let tapeEntries = [];
+
+  function fmt(n){
+    if (!isFinite(n)) return 'Error';
+    let s = String(n);
+    if (s.length > 14) {
+      s = n.toPrecision(10).replace(/\.?0+$/, '').replace(/\.?0+e/, 'e');
+    }
+    return s;
+  }
+
+  function render(){
+    displayEl.textContent = current;
+    tapeEl.textContent = tapeEntries.slice(-1)[0] || '\u00A0';
+  }
+
+  function pushTape(entry){
+    tapeEntries.push(entry);
+    if (tapeEntries.length > 20) tapeEntries.shift();
+  }
+
+  function inputDigit(d){
+    if (waitingForOperand || current === '0') {
+      current = (d === '.' ? '0.' : d);
+      waitingForOperand = false;
+    } else {
+      current += d;
+    }
+    render();
+  }
+
+  function inputDecimal(){
+    if (waitingForOperand) { current = '0.'; waitingForOperand = false; render(); return; }
+    if (!current.includes('.')) current += '.';
+    render();
+  }
+
+  function clearAll(){
+    current = '0'; previous = null; operator = null; waitingForOperand = false;
+    render();
+  }
+
+  function backspace(){
+    if (waitingForOperand) return;
+    current = current.length > 1 ? current.slice(0, -1) : '0';
+    render();
+  }
+
+  function toggleSign(){
+    if (current === '0') return;
+    current = current.startsWith('-') ? current.slice(1) : '-' + current;
+    render();
+  }
+
+  function compute(a, b, op){
+    switch(op){
+      case '+': return a + b;
+      case '-': return a - b;
+      case '*': return a * b;
+      case '/': return b === 0 ? NaN : a / b;
+      case '^': return Math.pow(a, b);
+      default: return b;
+    }
+  }
+
+  function opSymbol(op){
+    return { '+':'+', '-':'\u2212', '*':'\u00d7', '/':'\u00f7', '^':'^' }[op] || op;
+  }
+
+  function setOperator(nextOp){
+    const value = parseFloat(current);
+    if (previous !== null && operator && !waitingForOperand) {
+      const result = compute(previous, value, operator);
+      pushTape(`${fmt(previous)} ${opSymbol(operator)} ${fmt(value)} =`);
+      current = fmt(result);
+      previous = result;
+    } else {
+      previous = value;
+    }
+    operator = nextOp;
+    waitingForOperand = true;
+    render();
+  }
+
+  function equals(){
+    if (operator === null || previous === null) return;
+    const value = parseFloat(current);
+    const result = compute(previous, value, operator);
+    pushTape(`${fmt(previous)} ${opSymbol(operator)} ${fmt(value)} =`);
+    current = fmt(result);
+    previous = null;
+    operator = null;
+    waitingForOperand = true;
+    render();
+  }
+
+  const DEG = Math.PI / 180;
+
+  function applyUnary(fn){
+    const value = parseFloat(current);
+    let result, label;
+    switch(fn){
+      case 'sqrt': result = Math.sqrt(value); label = `\u221a(${fmt(value)})`; break;
+      case 'sqr':  result = value * value;    label = `(${fmt(value)})\u00b2`; break;
+      case 'sin':  result = Math.sin(value * DEG); label = `sin(${fmt(value)})`; break;
+      case 'cos':  result = Math.cos(value * DEG); label = `cos(${fmt(value)})`; break;
+      case 'tan':  result = Math.tan(value * DEG); label = `tan(${fmt(value)})`; break;
+      case 'log':  result = Math.log10(value); label = `log(${fmt(value)})`; break;
+      case 'ln':   result = Math.log(value);   label = `ln(${fmt(value)})`; break;
+      case 'inv':  result = value === 0 ? NaN : 1 / value; label = `1/(${fmt(value)})`; break;
+      case 'sign': toggleSign(); return;
+      case 'pi':   current = fmt(Math.PI); waitingForOperand = true; render(); return;
+      default: return;
+    }
+    pushTape(`${label} =`);
+    current = fmt(result);
+    waitingForOperand = true;
+    render();
+  }
+
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 90);
+
+      if (btn.dataset.num !== undefined) inputDigit(btn.dataset.num);
+      else if (btn.dataset.op !== undefined) setOperator(btn.dataset.op);
+      else if (btn.dataset.fn !== undefined) applyUnary(btn.dataset.fn);
+      else if (btn.dataset.action === 'clear') clearAll();
+      else if (btn.dataset.action === 'backspace') backspace();
+      else if (btn.dataset.action === 'decimal') inputDecimal();
+      else if (btn.dataset.action === 'equals') equals();
+    });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9') inputDigit(e.key);
+    else if (e.key === '.') inputDecimal();
+    else if (['+','-','*','/'].includes(e.key)) setOperator(e.key);
+    else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); equals(); }
+    else if (e.key === 'Backspace') backspace();
+    else if (e.key === 'Escape') clearAll();
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
