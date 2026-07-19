@@ -215,11 +215,30 @@
   @media (prefers-reduced-motion: reduce){
     button{ transition: none; }
   }
+
+  .home-link{
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: var(--amber-dim);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.12s ease, background 0.12s ease;
+  }
+  .home-link:hover{
+    color: var(--amber);
+    background: rgba(255,176,32,0.08);
+  }
 </style>
 </head>
 <body>
 
 <div class="eyebrow">INSTRUMENT SERIES · UTILITY 001</div>
+<a href="/" class="home-link">&larr; Home</a>
 
 <div>
   <div class="instrument">
