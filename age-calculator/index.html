@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age Calculator — Exact Age in Years, Months, Days</title>
+<meta name="description" content="Free online age calculator. Find your exact age in years, months, and days — as of today or any custom date.">
+<link rel="canonical" href="https://calculator-amber-six-60.vercel.app/age-calculator" />
+<meta property="og:title" content="Age Calculator — Exact Age in Years, Months, Days">
+<meta property="og:description" content="Find your exact age in years, months, and days — as of today or any custom date.">
+<meta property="og:type" content="website">
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0VN4W0GYG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M0VN4W0GYG');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1a1d1f;
+    --muted: #5b6266;
+    --accent: #0f4c6b;
+    --accent-hi: #14638a;
+    --rule: #e4e6e8;
+    --page-bg: #fbfbfa;
+    --field-bg: #f3f5f6;
+    --result-bg: #eef6f2;
+    --result-ink: #12603f;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background: var(--page-bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    padding: 40px 20px 40px;
+  }
+  main{ max-width: 460px; margin: 0 auto; }
+  .back-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    padding: 8px 4px;
+  }
+  .back-link:hover{ color: var(--accent-hi); text-decoration: underline; }
+  .eyebrow{
+    text-align:center;
+    color:#9aa0a3;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1{
+    text-align:center;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 0 0 8px;
+  }
+  .sub{
+    text-align:center;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 36px;
+  }
+  .field{ margin-bottom: 18px; }
+  label{
+    display:block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .input-wrap{ position: relative; }
+  input[type="date"]{
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--rule);
+    background: var(--field-bg);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: var(--font-mono);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.12s ease;
+  }
+  input[type="date"]:focus{ border-color: var(--accent); background: #fff; }
+
+  .toggle-row{
+    display:flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .toggle-chip{
+    flex: 1;
+    text-align:center;
+    padding: 9px;
+    border-radius: 7px;
+    background: var(--field-bg);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--rule);
+    user-select: none;
+  }
+  .toggle-chip.active{
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  button.calc-btn{
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.12s ease;
+  }
+  button.calc-btn:hover{ background: var(--accent-hi); }
+
+  .results{
+    margin-top: 24px;
+    background: var(--result-bg);
+    border-radius: 10px;
+    padding: 20px;
+    display: none;
+  }
+  .results.show{ display: block; }
+  .age-big{
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--result-ink);
+    margin-bottom: 10px;
+  }
+  .age-sub{
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .error-text{
+    font-size: 14px;
+    color: #b3261e;
+    text-align: center;
+  }
+
+  section.notice{
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+    padding-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  footer{
+    text-align:center;
+    color:#b7bbbd;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    margin-top: 36px;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <a href="/" class="back-link">&larr; Back to Calculators</a>
+
+  <div class="eyebrow">Free · No Sign-up</div>
+  <h1>Age Calculator</h1>
+  <p class="sub">Exact age in years, months, and days.</p>
+
+  <div class="field">
+    <label for="dob">Date of Birth</label>
+    <div class="input-wrap">
+      <input type="date" id="dob">
+    </div>
+  </div>
+
+  <div class="toggle-row">
+    <div class="toggle-chip active" id="chipToday">As of Today</div>
+    <div class="toggle-chip" id="chipCustom">Custom Date</div>
+  </div>
+
+  <div class="field" id="asOfField" style="display:none;">
+    <label for="asOf">As of Date</label>
+    <div class="input-wrap">
+      <input type="date" id="asOf">
+    </div>
+  </div>
+
+  <button class="calc-btn" id="calcBtn">Calculate Age</button>
+
+  <div class="results" id="results"></div>
+
+  <section class="notice">
+    <strong>DISCLAIMER:</strong> This calculator is provided for informational purposes only. We do not take any responsibility for the accuracy of the results. Please verify results independently before relying on them.
+  </section>
+
+  <footer>PRECISION UTILITY — AGE-1</footer>
+</main>
+
+<script>
+(function(){
+  const dobEl = document.getElementById('dob');
+  const asOfEl = document.getElementById('asOf');
+  const asOfField = document.getElementById('asOfField');
+  const chipToday = document.getElementById('chipToday');
+  const chipCustom = document.getElementById('chipCustom');
+  const btn = document.getElementById('calcBtn');
+  const results = document.getElementById('results');
+
+  let useCustomDate = false;
+
+  chipToday.addEventListener('click', () => {
+    useCustomDate = false;
+    chipToday.classList.add('active');
+    chipCustom.classList.remove('active');
+    asOfField.style.display = 'none';
+  });
+
+  chipCustom.addEventListener('click', () => {
+    useCustomDate = true;
+    chipCustom.classList.add('active');
+    chipToday.classList.remove('active');
+    asOfField.style.display = 'block';
+  });
+
+  function daysInMonth(year, monthIndexZeroBased){
+    return new Date(year, monthIndexZeroBased + 1, 0).getDate();
+  }
+
+  function calculateAge(birth, asOf){
+    let years = asOf.getFullYear() - birth.getFullYear();
+    let months = asOf.getMonth() - birth.getMonth();
+    let days = asOf.getDate() - birth.getDate();
+
+    if (days < 0){
+      months -= 1;
+      let prevMonth = asOf.getMonth() - 1;
+      let prevYear = asOf.getFullYear();
+      if (prevMonth < 0){ prevMonth = 11; prevYear -= 1; }
+      days += daysInMonth(prevYear, prevMonth);
+    }
+    if (months < 0){
+      months += 12;
+      years -= 1;
+    }
+    return { years, months, days };
+  }
+
+  function calculate(){
+    results.classList.remove('show');
+    results.innerHTML = '';
+
+    if (!dobEl.value){
+      results.innerHTML = '<div class="error-text">Please enter a date of birth.</div>';
+      results.classList.add('show');
+      return;
+    }
+
+    const birth = new Date(dobEl.value + 'T00:00:00');
+    let asOf;
+    if (useCustomDate){
+      if (!asOfEl.value){
+        results.innerHTML = '<div class="error-text">Please enter an "as of" date.</div>';
+        results.classList.add('show');
+        return;
+      }
+      asOf = new Date(asOfEl.value + 'T00:00:00');
+    } else {
+      asOf = new Date();
+      asOf.setHours(0,0,0,0);
+    }
+
+    if (birth > asOf){
+      results.innerHTML = '<div class="error-text">Date of birth must be before the "as of" date.</div>';
+      results.classList.add('show');
+      return;
+    }
+
+    const { years, months, days } = calculateAge(birth, asOf);
+    const totalDays = Math.round((asOf - birth) / (1000 * 60 * 60 * 24));
+
+    results.innerHTML =
+      `<div class="age-big">${years} years, ${months} months, ${days} days</div>` +
+      `<div class="age-sub">Total: ${totalDays.toLocaleString()} days</div>`;
+    results.classList.add('show');
+  }
+
+  btn.addEventListener('click', calculate);
+})();
+</script>
+
+</body>
+</html>
