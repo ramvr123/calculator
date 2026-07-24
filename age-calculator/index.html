@@ -87,20 +87,33 @@
     color: var(--muted);
     margin-bottom: 6px;
   }
-  .input-wrap{ position: relative; }
-  input[type="date"]{
+  .date-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 8px;
+  }
+  .date-row input{
     width: 100%;
-    padding: 13px 14px;
+    padding: 13px 10px;
     border: 1px solid var(--rule);
     background: var(--field-bg);
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 17px;
     font-family: var(--font-mono);
     color: var(--ink);
     outline: none;
+    text-align: center;
     transition: border-color 0.12s ease;
   }
-  input[type="date"]:focus{ border-color: var(--accent); background: #fff; }
+  .date-row input:focus{ border-color: var(--accent); background: #fff; }
+  .date-row .sub-label{
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 
   .toggle-row{
     display:flex;
@@ -196,9 +209,20 @@
   <p class="sub">Exact age in years, months, and days.</p>
 
   <div class="field">
-    <label for="dob">Date of Birth</label>
-    <div class="input-wrap">
-      <input type="date" id="dob">
+    <label>Date of Birth</label>
+    <div class="date-row">
+      <div>
+        <input type="number" id="dobDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+        <div class="sub-label">Day</div>
+      </div>
+      <div>
+        <input type="number" id="dobMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+        <div class="sub-label">Month</div>
+      </div>
+      <div>
+        <input type="number" id="dobYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+        <div class="sub-label">Year</div>
+      </div>
     </div>
   </div>
 
@@ -208,9 +232,20 @@
   </div>
 
   <div class="field" id="asOfField" style="display:none;">
-    <label for="asOf">As of Date</label>
-    <div class="input-wrap">
-      <input type="date" id="asOf">
+    <label>As of Date</label>
+    <div class="date-row">
+      <div>
+        <input type="number" id="asOfDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+        <div class="sub-label">Day</div>
+      </div>
+      <div>
+        <input type="number" id="asOfMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+        <div class="sub-label">Month</div>
+      </div>
+      <div>
+        <input type="number" id="asOfYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+        <div class="sub-label">Year</div>
+      </div>
     </div>
   </div>
 
@@ -227,8 +262,12 @@
 
 <script>
 (function(){
-  const dobEl = document.getElementById('dob');
-  const asOfEl = document.getElementById('asOf');
+  const dobDay = document.getElementById('dobDay');
+  const dobMonth = document.getElementById('dobMonth');
+  const dobYear = document.getElementById('dobYear');
+  const asOfDay = document.getElementById('asOfDay');
+  const asOfMonth = document.getElementById('asOfMonth');
+  const asOfYear = document.getElementById('asOfYear');
   const asOfField = document.getElementById('asOfField');
   const chipToday = document.getElementById('chipToday');
   const chipCustom = document.getElementById('chipCustom');
@@ -255,6 +294,18 @@
     return new Date(year, monthIndexZeroBased + 1, 0).getDate();
   }
 
+  function buildDate(dayEl, monthEl, yearEl){
+    const d = parseInt(dayEl.value, 10);
+    const m = parseInt(monthEl.value, 10);
+    const y = parseInt(yearEl.value, 10);
+    if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+    if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > 2100) return null;
+    const dt = new Date(y, m - 1, d);
+    // Reject invalid dates like Feb 30 (JS would otherwise roll it into March)
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    return dt;
+  }
+
   function calculateAge(birth, asOf){
     let years = asOf.getFullYear() - birth.getFullYear();
     let months = asOf.getMonth() - birth.getMonth();
@@ -278,21 +329,21 @@
     results.classList.remove('show');
     results.innerHTML = '';
 
-    if (!dobEl.value){
-      results.innerHTML = '<div class="error-text">Please enter a date of birth.</div>';
+    const birth = buildDate(dobDay, dobMonth, dobYear);
+    if (!birth){
+      results.innerHTML = '<div class="error-text">Please enter a valid date of birth.</div>';
       results.classList.add('show');
       return;
     }
 
-    const birth = new Date(dobEl.value + 'T00:00:00');
     let asOf;
     if (useCustomDate){
-      if (!asOfEl.value){
-        results.innerHTML = '<div class="error-text">Please enter an "as of" date.</div>';
+      asOf = buildDate(asOfDay, asOfMonth, asOfYear);
+      if (!asOf){
+        results.innerHTML = '<div class="error-text">Please enter a valid "as of" date.</div>';
         results.classList.add('show');
         return;
       }
-      asOf = new Date(asOfEl.value + 'T00:00:00');
     } else {
       asOf = new Date();
       asOf.setHours(0,0,0,0);
