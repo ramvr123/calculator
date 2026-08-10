@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Duration Calculator — Days Between Two Dates</title>
+<meta name="description" content="Free online time duration calculator. Find the exact difference between two dates in years, months, days, and total days.">
+<link rel="canonical" href="https://calculator-amber-six-60.vercel.app/time-duration-calculator" />
+<meta property="og:title" content="Time Duration Calculator — Days Between Two Dates">
+<meta property="og:description" content="Find the exact difference between two dates in years, months, days, and total days.">
+<meta property="og:type" content="website">
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M0VN4W0GYG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M0VN4W0GYG');
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink: #1a1d1f;
+    --muted: #5b6266;
+    --accent: #0f4c6b;
+    --accent-hi: #14638a;
+    --rule: #e4e6e8;
+    --page-bg: #fbfbfa;
+    --field-bg: #f3f5f6;
+    --result-bg: #eef6f2;
+    --result-ink: #12603f;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background: var(--page-bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    padding: 40px 20px 40px;
+  }
+  main{ max-width: 460px; margin: 0 auto; }
+  .back-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 28px;
+    padding: 8px 4px;
+  }
+  .back-link:hover{ color: var(--accent-hi); text-decoration: underline; }
+  .eyebrow{
+    text-align:center;
+    color:#9aa0a3;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1{
+    text-align:center;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin: 0 0 8px;
+  }
+  .sub{
+    text-align:center;
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 36px;
+  }
+  .field{ margin-bottom: 18px; }
+  label{
+    display:block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .date-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 8px;
+  }
+  .date-row input{
+    width: 100%;
+    padding: 13px 10px;
+    border: 1px solid var(--rule);
+    background: var(--field-bg);
+    border-radius: 8px;
+    font-size: 17px;
+    font-family: var(--font-mono);
+    color: var(--ink);
+    outline: none;
+    text-align: center;
+    transition: border-color 0.12s ease;
+  }
+  .date-row input:focus{ border-color: var(--accent); background: #fff; }
+  .date-row .sub-label{
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  button.calc-btn{
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.12s ease;
+  }
+  button.calc-btn:hover{ background: var(--accent-hi); }
+
+  .results{
+    margin-top: 24px;
+    background: var(--result-bg);
+    border-radius: 10px;
+    padding: 20px;
+    display: none;
+  }
+  .results.show{ display: block; }
+  .duration-big{
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--result-ink);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+  .duration-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    text-align: center;
+  }
+  .duration-grid .item .num{
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--result-ink);
+  }
+  .duration-grid .item .lbl{
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .error-text{
+    font-size: 14px;
+    color: #b3261e;
+    text-align: center;
+  }
+
+  section.notice{
+    border-top: 1px solid var(--rule);
+    margin-top: 40px;
+    padding-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  footer{
+    text-align:center;
+    color:#b7bbbd;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    margin-top: 36px;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <a href="/" class="back-link">&larr; Back to Calculators</a>
+
+  <div class="eyebrow">Free · No Sign-up</div>
+  <h1>Time Duration Calculator</h1>
+  <p class="sub">Find the exact time between two dates.</p>
+
+  <div class="field">
+    <label>Start Date</label>
+    <div class="date-row">
+      <div>
+        <input type="number" id="startDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+        <div class="sub-label">Day</div>
+      </div>
+      <div>
+        <input type="number" id="startMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+        <div class="sub-label">Month</div>
+      </div>
+      <div>
+        <input type="number" id="startYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+        <div class="sub-label">Year</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>End Date</label>
+    <div class="date-row">
+      <div>
+        <input type="number" id="endDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+        <div class="sub-label">Day</div>
+      </div>
+      <div>
+        <input type="number" id="endMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+        <div class="sub-label">Month</div>
+      </div>
+      <div>
+        <input type="number" id="endYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+        <div class="sub-label">Year</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" id="calcBtn">Calculate Duration</button>
+
+  <div class="results" id="results"></div>
+
+  <section class="notice">
+    <strong>DISCLAIMER:</strong> This calculator is provided for informational purposes only. We do not take any responsibility for the accuracy of the results. Please verify results independently before relying on them.
+  </section>
+
+  <footer>PRECISION UTILITY — TD-1</footer>
+</main>
+
+<script>
+(function(){
+  const startDay = document.getElementById('startDay');
+  const startMonth = document.getElementById('startMonth');
+  const startYear = document.getElementById('startYear');
+  const endDay = document.getElementById('endDay');
+  const endMonth = document.getElementById('endMonth');
+  const endYear = document.getElementById('endYear');
+  const btn = document.getElementById('calcBtn');
+  const results = document.getElementById('results');
+
+  function daysInMonth(year, monthIndexZeroBased){
+    return new Date(year, monthIndexZeroBased + 1, 0).getDate();
+  }
+
+  function buildDate(dayEl, monthEl, yearEl){
+    const d = parseInt(dayEl.value, 10);
+    const m = parseInt(monthEl.value, 10);
+    const y = parseInt(yearEl.value, 10);
+    if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+    if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > 2100) return null;
+    const dt = new Date(y, m - 1, d);
+    // Reject invalid dates like Feb 30 (JS would otherwise roll it into March)
+    if (dt.getFullYear() !== y || dt.getMonth() !== m - 1 || dt.getDate() !== d) return null;
+    return dt;
+  }
+
+  function calculateDuration(start, end){
+    let years = end.getFullYear() - start.getFullYear();
+    let months = end.getMonth() - start.getMonth();
+    let days = end.getDate() - start.getDate();
+
+    if (days < 0){
+      months -= 1;
+      let prevMonth = end.getMonth() - 1;
+      let prevYear = end.getFullYear();
+      if (prevMonth < 0){ prevMonth = 11; prevYear -= 1; }
+      days += daysInMonth(prevYear, prevMonth);
+    }
+    if (months < 0){
+      months += 12;
+      years -= 1;
+    }
+    return { years, months, days };
+  }
+
+  function calculate(){
+    results.classList.remove('show');
+    results.innerHTML = '';
+
+    const start = buildDate(startDay, startMonth, startYear);
+    if (!start){
+      results.innerHTML = '<div class="error-text">Please enter a valid start date.</div>';
+      results.classList.add('show');
+      return;
+    }
+
+    const end = buildDate(endDay, endMonth, endYear);
+    if (!end){
+      results.innerHTML = '<div class="error-text">Please enter a valid end date.</div>';
+      results.classList.add('show');
+      return;
+    }
+
+    if (start > end){
+      results.innerHTML = '<div class="error-text">Start date must be before the end date.</div>';
+      results.classList.add('show');
+      return;
+    }
+
+    const { years, months, days } = calculateDuration(start, end);
+    const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    const totalWeeks = (totalDays / 7).toFixed(1);
+    const totalMonths = years * 12 + months;
+
+    results.innerHTML =
+      `<div class="duration-big">${years} years, ${months} months, ${days} days</div>` +
+      `<div class="duration-grid">
+         <div class="item"><div class="num">${totalDays.toLocaleString()}</div><div class="lbl">Days</div></div>
+         <div class="item"><div class="num">${totalWeeks}</div><div class="lbl">Weeks</div></div>
+         <div class="item"><div class="num">${totalMonths}</div><div class="lbl">Months</div></div>
+       </div>`;
+    results.classList.add('show');
+  }
+
+  btn.addEventListener('click', calculate);
+})();
+</script>
+
+</body>
+</html>
