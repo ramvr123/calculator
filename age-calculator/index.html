@@ -22,50 +22,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/theme.css">
 <style>
-  :root{
-    --ink: #1a1d1f;
-    --muted: #5b6266;
-    --accent: #0f4c6b;
-    --accent-hi: #14638a;
-    --rule: #e4e6e8;
-    --page-bg: #fbfbfa;
-    --field-bg: #f3f5f6;
-    --result-bg: #eef6f2;
-    --result-ink: #12603f;
-    --font-sans: 'IBM Plex Sans', ui-sans-serif, sans-serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  }
-  *{ box-sizing:border-box; }
-  body{
-    margin:0;
-    background: var(--page-bg);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    padding: 40px 20px 40px;
-  }
+  body{ padding: 40px 20px 40px; }
   main{ max-width: 460px; margin: 0 auto; }
-  .back-link{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 28px;
-    padding: 8px 4px;
-  }
-  .back-link:hover{ color: var(--accent-hi); text-decoration: underline; }
-  .eyebrow{
-    text-align:center;
-    color:#9aa0a3;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
+  .back-link{ margin-bottom: 20px; }
+  .eyebrow{ text-align:center; margin-bottom: 10px; }
   h1{
     text-align:center;
     font-size: 26px;
@@ -77,35 +39,14 @@
     text-align:center;
     color: var(--muted);
     font-size: 14px;
-    margin: 0 0 36px;
-  }
-  .field{ margin-bottom: 18px; }
-  label{
-    display:block;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
-    margin-bottom: 6px;
+    margin: 0 0 28px;
   }
   .date-row{
     display: grid;
     grid-template-columns: 1fr 1fr 1.3fr;
     gap: 8px;
   }
-  .date-row input{
-    width: 100%;
-    padding: 13px 10px;
-    border: 1px solid var(--rule);
-    background: var(--field-bg);
-    border-radius: 8px;
-    font-size: 17px;
-    font-family: var(--font-mono);
-    color: var(--ink);
-    outline: none;
-    text-align: center;
-    transition: border-color 0.12s ease;
-  }
-  .date-row input:focus{ border-color: var(--accent); background: #fff; }
+  .date-row input{ text-align: center; }
   .date-row .sub-label{
     font-size: 10px;
     color: var(--muted);
@@ -139,30 +80,6 @@
     border-color: var(--accent);
   }
 
-  button.calc-btn{
-    width: 100%;
-    padding: 14px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    font-family: var(--font-sans);
-    cursor: pointer;
-    margin-top: 6px;
-    transition: background 0.12s ease;
-  }
-  button.calc-btn:hover{ background: var(--accent-hi); }
-
-  .results{
-    margin-top: 24px;
-    background: var(--result-bg);
-    border-radius: 10px;
-    padding: 20px;
-    display: none;
-  }
-  .results.show{ display: block; }
   .age-big{
     text-align: center;
     font-family: var(--font-mono);
@@ -176,82 +93,75 @@
     font-size: 13px;
     color: var(--muted);
   }
-  .error-text{
-    font-size: 14px;
-    color: #b3261e;
-    text-align: center;
-  }
 
-  section.notice{
-    border-top: 1px solid var(--rule);
-    margin-top: 40px;
-    padding-top: 20px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--muted);
-  }
-  footer{
-    text-align:center;
-    color:#b7bbbd;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    margin-top: 36px;
-    letter-spacing: 0.06em;
-  }
+  section.notice{ margin-top: 32px; }
+  footer{ margin-top: 24px; }
 </style>
 </head>
 <body>
 <main>
   <a href="/" class="back-link">&larr; Back to Calculators</a>
 
-  <div class="eyebrow">Free · No Sign-up</div>
-  <h1>Age Calculator</h1>
-  <p class="sub">Exact age in years, months, and days.</p>
+  <div class="panel">
+    <div class="eyebrow">Free · No Sign-up</div>
+    <h1>Age Calculator</h1>
+    <p class="sub">Exact age in years, months, and days.</p>
 
-  <div class="field">
-    <label>Date of Birth</label>
-    <div class="date-row">
-      <div>
-        <input type="number" id="dobDay" placeholder="DD" min="1" max="31" inputmode="numeric">
-        <div class="sub-label">Day</div>
-      </div>
-      <div>
-        <input type="number" id="dobMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
-        <div class="sub-label">Month</div>
-      </div>
-      <div>
-        <input type="number" id="dobYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
-        <div class="sub-label">Year</div>
+    <div class="field">
+      <label>Date of Birth</label>
+      <div class="date-row">
+        <div>
+          <input type="number" id="dobDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+          <div class="sub-label">Day</div>
+        </div>
+        <div>
+          <input type="number" id="dobMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+          <div class="sub-label">Month</div>
+        </div>
+        <div>
+          <input type="number" id="dobYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+          <div class="sub-label">Year</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="toggle-row">
-    <div class="toggle-chip active" id="chipToday">As of Today</div>
-    <div class="toggle-chip" id="chipCustom">Custom Date</div>
-  </div>
+    <div class="toggle-row">
+      <div class="toggle-chip active" id="chipToday">As of Today</div>
+      <div class="toggle-chip" id="chipCustom">Custom Date</div>
+    </div>
 
-  <div class="field" id="asOfField" style="display:none;">
-    <label>As of Date</label>
-    <div class="date-row">
-      <div>
-        <input type="number" id="asOfDay" placeholder="DD" min="1" max="31" inputmode="numeric">
-        <div class="sub-label">Day</div>
-      </div>
-      <div>
-        <input type="number" id="asOfMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
-        <div class="sub-label">Month</div>
-      </div>
-      <div>
-        <input type="number" id="asOfYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
-        <div class="sub-label">Year</div>
+    <div class="field" id="asOfField" style="display:none;">
+      <label>As of Date</label>
+      <div class="date-row">
+        <div>
+          <input type="number" id="asOfDay" placeholder="DD" min="1" max="31" inputmode="numeric">
+          <div class="sub-label">Day</div>
+        </div>
+        <div>
+          <input type="number" id="asOfMonth" placeholder="MM" min="1" max="12" inputmode="numeric">
+          <div class="sub-label">Month</div>
+        </div>
+        <div>
+          <input type="number" id="asOfYear" placeholder="YYYY" min="1900" max="2100" inputmode="numeric">
+          <div class="sub-label">Year</div>
+        </div>
       </div>
     </div>
+
+    <button class="calc-btn" id="calcBtn">Calculate Age</button>
+
+    <div class="results" id="results"></div>
   </div>
 
-  <button class="calc-btn" id="calcBtn">Calculate Age</button>
-
-  <div class="results" id="results"></div>
+  <div class="related">
+    <div class="related-label">Related Calculators</div>
+    <div class="related-links">
+      <a href="/time-duration-calculator"><span class="arrow">&#10148;</span> Time Duration Calculator</a>
+      <a href="/simple-interest-calculator"><span class="arrow">&#10148;</span> Simple Interest Calculator</a>
+      <a href="/compound-interest-calculator"><span class="arrow">&#10148;</span> Compound Interest Calculator</a>
+      <a href="/calculator"><span class="arrow">&#10148;</span> Basic Calculator</a>
+    </div>
+  </div>
 
   <section class="notice">
     <strong>DISCLAIMER:</strong> This calculator is provided for informational purposes only. We do not take any responsibility for the accuracy of the results. Please verify results independently before relying on them.
