@@ -52,3 +52,7 @@ Feel free to fork or copy this repo as a starting point for your own calculator/
 ## License
 
 No license file is included yet — treat this as "all rights reserved" unless a `LICENSE` file is added. Open an issue if you'd like to use this and need an explicit license.
+
+## Disclaimer
+
+These calculators are provided for informational purposes only. We do not take any responsibility for the accuracy of the results. Please verify results independently before relying on them.
